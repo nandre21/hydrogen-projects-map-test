@@ -2,53 +2,131 @@
 <html>
 <head>
   <title>Hydrogen Projects Map</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
   <style>
     body {
-      background-color: #f6f8fa; /* Light gray background similar to GitHub */
+      background-color: #f6f8fa;
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
-      color: #24292e; /* Dark text color similar to GitHub */
-    }
-    #banner {
-      background-color: #24292e; /* Dark blue banner similar to GitHub */
-      padding: 10px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #title {
-      font-size: 24px;
-      font-weight: 600; /* Bold font for the title */
-    }
-    #logo {
-      height: 80px;
-      width: auto;
+      font-family: Arial, sans-serif;
     }
     #map {
-      height: calc(100vh - 80px); /* Adjust height to account for the banner */
-      background-color: white;
+      height: 100vh;
+      background-color: #ffffff;
     }
-    .logo-container {
-      display: flex;
-      align-items: center;
+    #banner {
+      text-align: center;
+      background-color: #24292e;
+      color: #ffffff;
+      padding: 10px;
     }
-    .logo-container img {
-      margin-right: 10px;
+    #legend {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #ffffff;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div id="banner">
-    <div id="title">Hydrogen Projects Map</div>
-    <div class="logo-container">
-      <img id="logo" src="logonotlicensed.png" alt="Logo">
+    <h1>Hydrogen Projects Map</h1>
+    <img src="Logo(notlicensed).png" alt="Logo" width="100" height="67">
+  </div>
+
+  <div id="legend">
+    <h3>Legend</h3>
+    <div>
+      <input type="checkbox" id="filter-capture" checked>
+      <label for="filter-capture">Capture</label>
+    </div>
+    <div>
+      <input type="checkbox" id="filter-storage" checked>
+      <label for="filter-storage">Storage</label>
+    </div>
+    <div>
+      <input type="checkbox" id="filter-utilization" checked>
+      <label for="filter-utilization">Utilization</label>
     </div>
   </div>
-  <div id="map">
-    <iframe src="map.html" frameborder="0" style="border:0; height:100%; width:100%"></iframe>
-  </div>
+
+  <div id="map"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="filtered_data.js"></script>
+  <script>
+    // Leaflet map code
+    var map = L.map('map').setView([0, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Function to add markers to the map
+    function addMarkers() {
+      // Loop through the filtered data and add markers based on project type
+      for (var i = 0; i < filteredData.length; i++) {
+        var project = filteredData[i];
+        var marker = L.marker([project.Latitude, project.Longitude]).addTo(map);
+
+        // Customize the marker based on project type
+        switch (project["Project type"]) {
+          case "Capture":
+            marker.setIcon(L.icon({ iconUrl: 'capture-icon.png', iconSize: [24, 24] }));
+            break;
+          case "Storage":
+            marker.setIcon(L.icon({ iconUrl: 'storage-icon.png', iconSize: [24, 24] }));
+            break;
+          case "Utilization":
+            marker.setIcon(L.icon({ iconUrl: 'utilization-icon.png', iconSize: [24, 24] }));
+            break;
+          default:
+            marker.setIcon(L.icon({ iconUrl: 'default-icon.png', iconSize: [24, 24] }));
+        }
+
+        // Add a popup with project information
+        var popupContent = '<strong>' + project["Project name"] + '</strong><br>' +
+          'Partners: ' + project.Partners + '<br>' +
+          'Project Type: ' + project["Project type"] + '<br>' +
+          'Ref 1: ' + project["Ref 1"];
+        marker.bindPopup(popupContent);
+      }
+    }
+
+    // Function to filter the data based on the selected checkboxes
+    function filterData() {
+      var captureChecked = document.getElementById('filter-capture').checked;
+      var storageChecked = document.getElementById('filter-storage').checked;
+      var utilizationChecked = document.getElementById('filter-utilization').checked;
+
+      // Filter the data based on the selected checkboxes
+      filteredData = data.filter(function(project) {
+        if ((project["Project type"] === "Capture" && captureChecked) ||
+            (project["Project type"] === "Storage" && storageChecked) ||
+            (project["Project type"] === "Utilization" && utilizationChecked)) {
+          return true;
+        }
+        return false;
+      });
+
+      // Clear the map and add markers with the filtered data
+      map.eachLayer(function(layer) {
+        if (layer instanceof L.Marker) {
+          map.removeLayer(layer);
+        }
+      });
+      addMarkers();
+    }
+
+    // Call the filterData function initially to load all markers
+    filterData();
+
+    // Add event listeners to the checkboxes to trigger filtering
+    document.getElementById('filter-capture').addEventListener('change', filterData);
+    document.getElementById('filter-storage').addEventListener('change', filterData);
+    document.getElementById('filter-utilization').addEventListener('change', filterData);
+  </script>
 </body>
 </html>
