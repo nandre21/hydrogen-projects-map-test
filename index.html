@@ -55,20 +55,24 @@
   <div id="map"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="filtered_data.js"></script>
   <script>
-    // Leaflet map code
+    // Leaflet map code from map.html file
     var map = L.map('map').setView([0, 0], 2);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+    // Include the map.html file to load the data and add markers
+    var script = document.createElement('script');
+    script.src = 'map.html';
+    document.head.appendChild(script);
+
     // Function to add markers to the map
-    function addMarkers() {
-      // Loop through the filtered data and add markers based on project type
-      for (var i = 0; i < filteredData.length; i++) {
-        var project = filteredData[i];
+    function addMarkers(data) {
+      // Loop through the data and add markers based on project type
+      for (var i = 0; i < data.length; i++) {
+        var project = data[i];
         var marker = L.marker([project.Latitude, project.Longitude]).addTo(map);
 
         // Customize the marker based on project type
@@ -86,11 +90,13 @@
             marker.setIcon(L.icon({ iconUrl: 'default-icon.png', iconSize: [24, 24] }));
         }
 
-        // Add a popup with project information
-        var popupContent = '<strong>' + project["Project name"] + '</strong><br>' +
-          'Partners: ' + project.Partners + '<br>' +
-          'Project Type: ' + project["Project type"] + '<br>' +
-          'Ref 1: ' + project["Ref 1"];
+        // Create popup content with project details
+        var popupContent = `
+          <strong>${project["Project name"]}</strong><br>
+          Partners: ${project.Partners}<br>
+          Project Type: ${project["Project type"]}<br>
+          Ref 1: ${project["Ref 1"]}
+        `;
         marker.bindPopup(popupContent);
       }
     }
@@ -102,7 +108,7 @@
       var utilizationChecked = document.getElementById('filter-utilization').checked;
 
       // Filter the data based on the selected checkboxes
-      filteredData = data.filter(function(project) {
+      var filteredData = data.filter(function(project) {
         if ((project["Project type"] === "Capture" && captureChecked) ||
             (project["Project type"] === "Storage" && storageChecked) ||
             (project["Project type"] === "Utilization" && utilizationChecked)) {
@@ -117,7 +123,7 @@
           map.removeLayer(layer);
         }
       });
-      addMarkers();
+      addMarkers(filteredData);
     }
 
     // Call the filterData function initially to load all markers
