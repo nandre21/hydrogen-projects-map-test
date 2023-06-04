@@ -28,16 +28,25 @@
       height: 80px;
       width: auto;
     }
-    #map {
-      height: calc(100vh - 80px); /* Adjust height to account for the banner */
-      background-color: white;
-    }
     .logo-container {
       display: flex;
       align-items: center;
     }
     .logo-container img {
       margin-right: 10px;
+    }
+    #navigation {
+      display: flex;
+      align-items: center;
+    }
+    .nav-link {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+    #map {
+      height: calc(100vh - 80px); /* Adjust height to account for the banner */
+      background-color: white;
     }
     #footer {
       background-color: #111111;
@@ -52,6 +61,11 @@
     <div id="title">Hydrogen Projects Map</div>
     <div class="logo-container">
       <img id="logo" src="Logo(notlicensed).png" alt="Logo">
+    </div>
+    <div id="navigation">
+      <a class="nav-link" href="page1.html">Page 1</a>
+      <a class="nav-link" href="page2.html">Page 2</a>
+      <a class="nav-link" href="page3.html">Page 3</a>
     </div>
   </div>
   <div id="map">
