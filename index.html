@@ -7,13 +7,32 @@
       background-color: black;
       margin: 0;
     }
+    #banner {
+      background-color: cobalt;
+      padding: 10px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #title {
+      font-size: 24px;
+    }
+    #logo {
+      height: 50px;
+      margin-right: 10px;
+    }
     #map {
-      height: 100vh;
+      height: calc(100vh - 50px); /* Adjust height to account for the banner */
       background-color: black;
     }
   </style>
 </head>
 <body>
+  <div id="banner">
+    <div id="title">Hydrogen Projects Map</div>
+    <img id="logo" src="Logo(notlicensed).png" alt="Logo">
+  </div>
   <div id="map">
     <iframe src="map.html" frameborder="0" style="border:0; height:100%; width:100%"></iframe>
   </div>
