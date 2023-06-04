@@ -11,26 +11,36 @@
       background-color: grey;
       padding: 10px;
       color: white;
-      text-align: center;
-      font-family: 'Times New Roman', Times, serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     #title {
       font-size: 24px;
     }
     #logo {
-      height: 50px;
-      margin-right: 10px;
+      height: 80px;
+      width: auto;
     }
     #map {
-      height: calc(100vh - 50px); /* Adjust height to account for the banner */
+      height: calc(100vh - 80px); /* Adjust height to account for the banner */
       background-color: white;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .logo-container img {
+      margin-right: 10px;
     }
   </style>
 </head>
 <body>
   <div id="banner">
     <div id="title">Hydrogen Projects Map</div>
-    <img id="logo" src="logonotlicensed.png" alt="Logo">
+    <div class="logo-container">
+      <img id="logo" src="Logo(notlicensed).png" alt="Logo">
+    </div>
   </div>
   <div id="map">
     <iframe src="map.html" frameborder="0" style="border:0; height:100%; width:100%"></iframe>
